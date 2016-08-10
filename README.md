@@ -9,11 +9,12 @@ Midnite classics communicate with applications over LAN or at mymidnite.com via 
 
 
 ## TODO
-[ ] Finish Readme
-[ ] Licensing
-[x] Skeleton Project
-[x] Virtualenv
-[ ] Expose modbus registers via python classes
-[ ] Enforce Read/Write rules
-[ ] Example Programs
+
+- [ ] Finish Readme
+- [ ] Licensing
+- [x] Skeleton Project
+- [x] Virtualenv
+- [ ] Boilerplate for registers
+- [ ] Enforce Read/Write rules
+- [ ] Example Programs
 
