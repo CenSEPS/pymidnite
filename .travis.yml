@@ -3,7 +3,6 @@ language: python
 
 # command to install dependencies
 install:
-    - pip install --upgrade pip
     - pip install -r requirements.txt
 
 script: make test
