@@ -1,12 +1,9 @@
 language: python
 python:
-    - "2.7"
+    - '2.7'
 
 # command to install dependencies
 install:
-    - pip install -I -r requirements.txt
+    - pip install -r requirements.txt
 
 script: make test
-
-virtualenv:
-        - system_site_packages: false
