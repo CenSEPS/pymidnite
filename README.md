@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/CenSEPS/pymidnite.svg?branch=master)](https://travis-ci.org/CenSEPS/pymidnite)  
 # PyMidnite
 
 A Python (2.7) library for interacting with Midnite Solar Charge Controllers
