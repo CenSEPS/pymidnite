@@ -6,3 +6,6 @@ install:
     - pip install -I -r requirements.txt
 
 script: make test
+
+virtualenv:
+        - system_site_packages: false
