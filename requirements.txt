@@ -1,10 +1,15 @@
 configparser==3.5.0
 enum34==1.1.6
 flake8==3.0.4
+funcsigs==1.0.2
 mccabe==0.5.2
+mock==2.0.0
+nose2==0.6.5
+pbr==1.10.0
 pycodestyle==2.0.0
 pyflakes==1.2.3
 pymodbus==1.2.0
 pyserial==3.1.1
+six==1.10.0
 Twisted==16.3.0
 zope.interface==4.2.0
