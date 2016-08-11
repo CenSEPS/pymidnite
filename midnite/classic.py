@@ -1,12 +1,23 @@
 from pymodbus.client.sync import ModbusTcpClient
-import logging
+# import logging
 
 
 def _msb(value):
-    return (value >> 8)
+    if type(value) != int:
+        raise TypeError("Function _msb only takes arguments of type 'int'")
+    bits = value.bit_length()
+    byte_mod = bits % 8
+    if byte_mod == 0:
+        return (value >> (bits-8))
+    else:
+        return (value >> (bits/8)*8)
+        # take advantage of integer division to
+        # shift the appropriate ammount
 
 
 def _lsb(value):
+    if type(value) != int:
+        raise TypeError("Function _lsb only takes arguments of type 'int'")
     return (value & 0xFF)
 
 # TODO: Figure out how to make register decoding work from this class?
