@@ -1,5 +1,5 @@
 import unittest
-from midnite.classic import _msb, _lsb
+from midnite.classic import _msb, _lsb, MidniteClassicRegisters
 
 
 class TestPrivateFunctions(unittest.TestCase):
@@ -32,3 +32,59 @@ class TestPrivateFunctions(unittest.TestCase):
         self.assertEquals(_lsb(a), 0x11)
         a = 0x1
         self.assertEquals(_lsb(a), 0x1)
+
+
+class TestDecodeEncodeLambdas(unittest.TestCase):
+    def test_unit_id_decode(self):
+        """UNIT_ID Register Decoder
+        [register[0]]msb=pcb revision
+        [register[0]]lsb=unit type
+        """
+        pcb_revision = 0xAA
+        unit_type = 0xCC
+        decode = MidniteClassicRegisters.UNIT_ID['decode']
+        registers = []
+        registers.append((pcb_revision << 8) | unit_type)
+        expected = {
+            'pcb_revision': pcb_revision,
+            'unit_type': unit_type
+        }
+        self.assertDictEqual(expected, decode(registers))
+        registers = ['a']
+        self.assertRaises(TypeError, decode, registers)
+        registers = []
+        self.assertRaises(IndexError, decode, registers)
+
+    def test_unit_mac_address_decode(self):
+        """UNIT_MAC_ADDRESS Register Decoder
+        [register[0]lsb=octet 0
+        [register[0]]msb=octet 1
+        [register[1]]lsb=octet 2
+        [register[1]]msb=octet 3
+        [register[2]]lsb=octet 4
+        [register[2]]msb=octet 5
+        """
+        octet0 = 0xFF
+        octet1 = 0xFE
+        octet2 = 0xFB
+        octet3 = 0xFA
+        octet4 = 0xF7
+        octet5 = 0xF6
+        decode = MidniteClassicRegisters.UNIT_MAC_ADDRESS['decode']
+        registers = []
+        registers.append((octet1 << 8) | octet0)
+        registers.append((octet3 << 8) | octet2)
+        registers.append((octet5 << 8) | octet4)
+        expected = {
+            'mac_address': [hex(octet5),
+                            hex(octet4),
+                            hex(octet3),
+                            hex(octet2),
+                            hex(octet1),
+                            hex(octet0)]
+        }
+        self.assertDictEqual(expected, decode(registers))
+        registers = ['A', 'B', 'C']
+        self.assertRaises(TypeError, decode, registers)
+        registers = []
+        self.assertRaises(IndexError, decode, registers)
