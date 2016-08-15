@@ -1,4 +1,5 @@
 from pymodbus.client.sync import ModbusTcpClient
+from serial import Serial
 # import logging
 
 
@@ -179,6 +180,51 @@ class MidniteClassicTCP(object):
                     "Register {} is not writable".format(name))
         else:
             raise AttributeError("Register {} is invalid".format(name))
+
+
+class MidniteClassicUSB(object):
+    """USB Connected MidniteClassic
+    Classic can dump all modbus registers or, more by default,
+    "PV Input Volts, Target Volts, Average batt volts,
+    Averaget Batt amps, PV Input Amps, Average Batt Power (charging) Watts\r\n"
+    twice per second
+    """
+
+    def __init__(self, port, baud=38400,
+                 bytesize=8, parity='N',
+                 stopbits=1, timeout=None):
+        self.port = port
+        self.baud = baud
+        self.bytesize = bytesize
+        self.parity = parity
+        self.stopbits = stopbits
+        self.timeout = timeout
+        self.ser = Serial(port, baud, bytesize,
+                          parity, stopbits, timeout)
+
+    @classmethod
+    def _parse_usb_data_line(cls, line):
+        values = line.split(',')
+        if len(values) != 6:
+            raise Exception("bad line")
+            # we need a custom exception to catch for a bad data line
+        else:
+            return {
+                'PV_input_volts': float(values[0]),
+                'Target_volts': float(values[1]),
+                'Battery_volts_av': float(values[2]),
+                'Battery_current_av': float(values[3]),
+                'PV_input_amps': float(values[4]),
+                'Battery_charging_power_watts': float(values[5])
+            }
+
+    def read_one_line(self):
+        if self.ser.readable():
+            self.ser.flushInput()
+            self.ser.readline()     # throw away incomplete reading
+            return self._parse_usb_data_line(self.ser.readline().strip('\r'))
+        else:
+            raise Exception("usb(serial) port not readable")
 
 
 if __name__ == "__main__":
