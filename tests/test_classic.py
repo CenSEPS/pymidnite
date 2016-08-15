@@ -1,5 +1,5 @@
 import unittest
-from midnite.classic import _msb, _lsb, MidniteClassicRegisters
+from midnite.classic import _msb, _lsb, MidniteClassicModbusRegisters
 
 
 class TestPrivateFunctions(unittest.TestCase):
@@ -42,7 +42,7 @@ class TestDecodeEncodeLambdas(unittest.TestCase):
         """
         pcb_revision = 0xAA
         unit_type = 0xCC
-        decode = MidniteClassicRegisters.UNIT_ID['decode']
+        decode = MidniteClassicModbusRegisters.UNIT_ID['decode']
         registers = []
         registers.append((pcb_revision << 8) | unit_type)
         expected = {
@@ -70,7 +70,7 @@ class TestDecodeEncodeLambdas(unittest.TestCase):
         octet3 = 0xFA
         octet4 = 0xF7
         octet5 = 0xF6
-        decode = MidniteClassicRegisters.UNIT_MAC_ADDRESS['decode']
+        decode = MidniteClassicModbusRegisters.UNIT_MAC_ADDRESS['decode']
         registers = []
         registers.append((octet1 << 8) | octet0)
         registers.append((octet3 << 8) | octet2)

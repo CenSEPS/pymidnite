@@ -25,7 +25,7 @@ def _lsb(value):
 # TODO: Mark which registers get saved to EEPROM
 
 
-class MidniteClassicRegisters(object):
+class MidniteClassicModbusRegisters(object):
 
     @classmethod
     def get_register_list(cls):
@@ -130,22 +130,22 @@ class MidniteClassicRegisters(object):
                 'readable': True, 'writeable': True}
 
 
-class MidniteClassic(object):
+class MidniteClassicTCP(object):
 
-    registers = MidniteClassicRegisters.get_register_list()
+    registers = MidniteClassicModbusRegisters.get_register_list()
 
     def _addr(self, addr):
         return addr-1
 
     def __init__(self, host, port):
         # check if host/port are none?
-        super(MidniteClassic, self).__setattr__(
+        super(MidniteClassicTCP, self).__setattr__(
             'client', ModbusTcpClient(host, port))
         # self.client = ModbusTcpClient(host, port)
 
     def __getattr__(self, name):
         if name in self.registers:
-            register_dict = getattr(MidniteClassicRegisters, name)
+            register_dict = getattr(MidniteClassicModbusRegisters, name)
             if register_dict is None:
                 raise AttributeError(
                     "Register {} is not implemented.".format(name))
@@ -167,7 +167,7 @@ class MidniteClassic(object):
 
     def __setattr__(self, name, value):
         if name in self.registers:
-            register_dict = getattr(MidniteClassicRegisters, name)
+            register_dict = getattr(MidniteClassicModbusRegisters, name)
             if register_dict is None:
                 raise AttributeError(
                     "Register {} is not implemented".format(name))
@@ -182,7 +182,7 @@ class MidniteClassic(object):
 
 
 if __name__ == "__main__":
-    midnite = MidniteClassic('192.168.1.10', 502)
+    midnite = MidniteClassicTCP('192.168.1.10', 502)
     res = midnite.UNIT_ID
     print res
     res = midnite.UNIT_SW_DATE_RO
