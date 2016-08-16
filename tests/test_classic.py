@@ -67,6 +67,34 @@ class TestMidniteClassicUSB(unittest.TestCase):
             testLine
         )
 
+    @mock.patch('midnite.classic.Serial')
+    @mock.patch.object(MidniteClassicUSB, 'usb_init')
+    def test_read_one_line(self, mock_usb_init, mock_serial):
+        ms = mock_serial.return_value
+        ms.readable.return_value = False
+        m = MidniteClassicUSB(port="fakeport")
+        self.assertRaises(MidniteClassicUSBError, m.read_one_line)
+        ms.readline.assert_not_called()
+        ms.flushInput.assert_not_called()
+        ms.readable.assert_called_once()
+
+        testLine = "   6.5,    6.4,   14.0,    0.0,    0.0,     0\n"
+        expected = {
+            'PV_input_volts': 6.5,
+            'Target_volts': 6.4,
+            'Battery_volts_av': 14.0,
+            'Battery_current_av': 0.0,
+            'PV_input_amps': 0.0,
+            'Battery_charging_power_watts': 0.0
+        }
+        ms.reset_mock()
+        ms.readable.return_value = True
+        ms.readline.return_value = testLine
+        self.assertDictEqual(expected, m.read_one_line())
+        ms.flushInput.assert_called()
+        self.assertEquals(ms.readline.call_count, 2)
+        ms.readable.assert_called_once()
+
 
 class TestDecodeEncodeLambdas(unittest.TestCase):
     def test_unit_id_decode(self):

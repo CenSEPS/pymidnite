@@ -1,5 +1,6 @@
 from pymodbus.client.sync import ModbusTcpClient
 from serial import Serial
+from util import USBMixin
 # import logging
 
 
@@ -182,13 +183,16 @@ class MidniteClassicTCP(object):
             raise AttributeError("Register {} is invalid".format(name))
 
 
-class MidniteClassicUSB(object):
+class MidniteClassicUSB(USBMixin, object):
     """USB Connected MidniteClassic
     Classic can dump all modbus registers or, more by default,
     "PV Input Volts, Target Volts, Average batt volts,
     Averaget Batt amps, PV Input Amps, Average Batt Power (charging) Watts\r\n"
     twice per second
     """
+    idVendor = 0xFFFF
+
+    idProduct = 0x0005
 
     def __init__(self, port, baud=38400,
                  bytesize=8, parity='N',
@@ -201,6 +205,7 @@ class MidniteClassicUSB(object):
         self.timeout = timeout
         self.ser = Serial(port, baud, bytesize,
                           parity, stopbits, timeout)
+        self.usb_init(idVendor=self.idVendor, idProduct=self.idProduct)
 
     @classmethod
     def _parse_usb_data_line(cls, line):
