@@ -206,7 +206,7 @@ class MidniteClassicUSB(object):
     def _parse_usb_data_line(cls, line):
         values = line.split(',')
         if len(values) != 6:
-            raise Exception("bad line")
+            raise MidniteClassicDataError("Recieved Bad Line")
             # we need a custom exception to catch for a bad data line
         else:
             return {
@@ -221,11 +221,27 @@ class MidniteClassicUSB(object):
     def read_one_line(self):
         if self.ser.readable():
             self.ser.flushInput()
-            self.ser.readline()     # throw away incomplete reading
-            return self._parse_usb_data_line(self.ser.readline().strip('\r'))
+            while True:
+                self.ser.readline()     # throw away incomplete reading
+                try:
+                    parsed_line = self._parse_usb_data_line(
+                        self.ser.readline().strip('\r')
+                    )
+                except MidniteClassicDataError:
+                    continue
+                else:
+                    break
+            return parsed_line
         else:
-            raise Exception("usb(serial) port not readable")
+            raise MidniteClassicUSBError("usb(serial) port not readable")
 
+
+class MidniteClassicDataError(Exception):
+    pass
+
+
+class MidniteClassicUSBError(Exception):
+    pass
 
 if __name__ == "__main__":
     midnite = MidniteClassicTCP('192.168.1.10', 502)

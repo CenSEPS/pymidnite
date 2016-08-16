@@ -1,6 +1,8 @@
 import unittest
+import mock
+
 from midnite.classic import _msb, _lsb, MidniteClassicModbusRegisters,\
-    MidniteClassicUSB
+    MidniteClassicUSB, MidniteClassicDataError, MidniteClassicUSBError
 
 
 class TestPrivateFunctions(unittest.TestCase):
@@ -41,7 +43,6 @@ class TestMidniteClassicUSB(unittest.TestCase):
         pass
 
     def test_parse_usb_line(self):
-        # we need to take advantage of setup and teardown stuff soon
         testLine = "   6.5,    6.4,   14.0,    0.0,    0.0,     0\n"
         expected = {
             'PV_input_volts': 6.5,
@@ -53,6 +54,18 @@ class TestMidniteClassicUSB(unittest.TestCase):
         }
         rv = MidniteClassicUSB._parse_usb_data_line(testLine)
         self.assertDictEqual(rv, expected)
+        testLine = "   6.5,    6.4,   14.0,\n"
+        self.assertRaises(
+            MidniteClassicDataError,
+            MidniteClassicUSB._parse_usb_data_line,
+            testLine
+        )
+        testLine = ""
+        self.assertRaises(
+            MidniteClassicDataError,
+            MidniteClassicUSB._parse_usb_data_line,
+            testLine
+        )
 
 
 class TestDecodeEncodeLambdas(unittest.TestCase):
