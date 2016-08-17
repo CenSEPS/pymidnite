@@ -232,10 +232,11 @@ class MidniteClassicUSB(USBMixin, object):
         if self.ser.readable():
             self.ser.flushInput()
             while True:
-                self.ser.readline()     # throw away incomplete reading
+                # self.ser.readline()     # throw away incomplete reading
                 try:
+                    l = self.ser.readline()
                     parsed_line = self._parse_usb_data_line(
-                        self.ser.readline().strip('\r')
+                        l.strip('\r')
                     )
                 except MidniteClassicDataError:
                     continue

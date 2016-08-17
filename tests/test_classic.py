@@ -92,7 +92,7 @@ class TestMidniteClassicUSB(unittest.TestCase):
         ms.readline.return_value = testLine
         self.assertDictEqual(expected, m.read_one_line())
         ms.flushInput.assert_called()
-        self.assertEquals(ms.readline.call_count, 2)
+        ms.readline.assert_called_once()
         ms.readable.assert_called_once()
 
 
