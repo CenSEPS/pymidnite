@@ -39,8 +39,70 @@ class TestPrivateFunctions(unittest.TestCase):
 
 class TestMidniteClassicUSB(unittest.TestCase):
 
-    def test_constructor(self):
-        pass
+    @mock.patch('midnite.classic.Serial')
+    @mock.patch.object(MidniteClassicUSB, 'usb_init')
+    def test_constructor(self, mock_usb_init, mock_serial):
+        serial_dev = '/dev/fakeserial'
+        def_baud = 9600
+        def_byte_size = 8
+        def_parity = 'N'
+        def_stop_bits = 1
+        def_timeout = None
+        m = MidniteClassicUSB(serial_dev)
+        self.assertEqual(m.port, serial_dev)
+        self.assertEqual(m.baud, def_baud)
+        self.assertEqual(m.byte_size, def_byte_size)
+        self.assertEqual(m.parity, def_parity)
+        self.assertEqual(m.stop_bits, def_stop_bits)
+        self.assertIs(m.timeout, def_timeout)
+        mock_serial.assert_called_once_with(
+            port=serial_dev,
+            baudrate=def_baud,
+            bytesize=def_byte_size,
+            parity=def_parity,
+            stopbits=def_stop_bits,
+            timeout=def_timeout
+        )
+        mock_usb_init.assert_called_once_with(
+            idVendor=MidniteClassicUSB.idVendor,
+            idProduct=MidniteClassicUSB.idProduct
+        )
+
+        mock_serial.reset_mock()
+        mock_usb_init.reset_mock()
+        del m
+        serial_dev = 'COMFAKE'
+        t_baud = 38400
+        t_byte_size = 5
+        t_parity = 'E'
+        t_stop_bits = 1.5
+        t_timeout = 10
+        m = MidniteClassicUSB(
+            serial_dev,
+            t_baud,
+            t_byte_size,
+            t_parity,
+            t_stop_bits,
+            t_timeout
+        )
+        self.assertEqual(m.port, serial_dev)
+        self.assertEqual(m.baud, t_baud)
+        self.assertEqual(m.byte_size, t_byte_size)
+        self.assertEqual(m.parity, t_parity)
+        self.assertEqual(m.stop_bits, t_stop_bits)
+        self.assertEqual(m.timeout, t_timeout)
+        mock_serial.assert_called_once_with(
+            port=serial_dev,
+            baudrate=t_baud,
+            bytesize=t_byte_size,
+            parity=t_parity,
+            stopbits=t_stop_bits,
+            timeout=t_timeout
+        )
+        mock_usb_init.assert_called_once_with(
+            idVendor=MidniteClassicUSB.idVendor,
+            idProduct=MidniteClassicUSB.idProduct
+        )
 
     def test_parse_usb_line(self):
         testLine = "   6.5,    6.4,   14.0,    0.0,    0.0,     0\n"
@@ -91,9 +153,37 @@ class TestMidniteClassicUSB(unittest.TestCase):
         ms.readable.return_value = True
         ms.readline.return_value = testLine
         self.assertDictEqual(expected, m.read_one_line())
+        ms.readable.assert_called_once()
         ms.flushInput.assert_called()
         ms.readline.assert_called_once()
+
+    @mock.patch('midnite.classic.Serial', autospec=True)
+    @mock.patch.object(MidniteClassicUSB, 'usb_init')
+    def test_read_one_line_with_bad_input_first(
+        self,
+        mock_usb_init,
+        mock_serial
+    ):
+        ms = mock_serial.return_value
+        t_serial_dev = 'fake'
+        t_lines = [
+            "\r   6.5,    6.4,   14.0,\n",
+            "\r   6.5,    6.4,   14.0,    0.0,    0.0,     0\n"
+        ]
+        expected = {
+            'PV_input_volts': 6.5,
+            'Target_volts': 6.4,
+            'Battery_volts_av': 14.0,
+            'Battery_current_av': 0.0,
+            'PV_input_amps': 0.0,
+            'Battery_charging_power_watts': 0.0
+        }
+        ms.readline.side_effect = t_lines
+        m = MidniteClassicUSB(t_serial_dev)
+        self.assertDictEqual(m.read_one_line(), expected)
         ms.readable.assert_called_once()
+        ms.flushInput.assert_called_once()
+        self.assertEquals(ms.readline.call_count, 2)
 
 
 class TestDecodeEncodeLambdas(unittest.TestCase):
