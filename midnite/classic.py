@@ -194,7 +194,7 @@ class MidniteClassicUSB(USBMixin, object):
 
     idProduct = 0x0005
 
-    def __init__(self, port, baud=38400,
+    def __init__(self, port, baud=9600,
                  bytesize=8, parity='N',
                  stopbits=1, timeout=None):
         self.port = port
