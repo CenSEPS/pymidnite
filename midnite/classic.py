@@ -185,7 +185,7 @@ class MidniteClassicTCP(object):
 
 class MidniteClassicUSB(USBMixin, object):
     """USB Connected MidniteClassic
-    Classic can dump all modbus registers or, more by default,
+    Classic can dump all modbus registers or, by default,
     "PV Input Volts, Target Volts, Average batt volts,
     Averaget Batt amps, PV Input Amps, Average Batt Power (charging) Watts\r\n"
     twice per second
