@@ -199,12 +199,17 @@ class MidniteClassicUSB(USBMixin, object):
                  stopbits=1, timeout=None):
         self.port = port
         self.baud = baud
-        self.bytesize = bytesize
+        self.byte_size = bytesize
         self.parity = parity
-        self.stopbits = stopbits
+        self.stop_bits = stopbits
         self.timeout = timeout
-        self.ser = Serial(port, baud, bytesize,
-                          parity, stopbits, timeout)
+        self.ser = Serial(
+            port=port,
+            baudrate=baud,
+            bytesize=bytesize,
+            parity=parity,
+            stopbits=stopbits,
+            timeout=timeout)
         self.usb_init(idVendor=self.idVendor, idProduct=self.idProduct)
 
     @classmethod
