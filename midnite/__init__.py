@@ -42,7 +42,7 @@ Currently, only the 'Classic' models are supported.
     - USBMixin is specific to the CenSEPS group for our telemetry system.
     USBMixin will eventually be moved to a different module.
 """
-# from classic import MidniteClassicUSB  # noqa
+from classic import MidniteClassicUSB  # noqa
 
 __author__ = "Zachary W. Graham"
 __copyright__ = "Copyright 2016, Regents of the University of California"
@@ -56,6 +56,3 @@ __version__ = "{}.{}.{}".format(
 __maintainer__ = "Zachary W. Graham"
 __email__ = "zwgraham@soe.ucsc.edu"
 __status__ = "Beta"
-
-
-__all__ = ['classic.MidniteClassicUSB']
