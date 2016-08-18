@@ -13,5 +13,5 @@ $(VENV):
 	$(VENV)/bin/pip install -r requirements.txt
 
 test:
-	$(LINT) tests midnite
 	$(NOSE) -v
+	$(LINT) tests midnite setup.py
