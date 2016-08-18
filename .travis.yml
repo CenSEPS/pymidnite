@@ -2,10 +2,18 @@ language: python
 python:
     - '2.7'
 
-# command to install dependencies
+# get pip up-to-date
 install:
+    - pip install -U pip
     - pip install -r requirements.txt
+    - pip install coveralls
 
 script:
-    - flake8 tests pymidnite
-    - nose2 -v
+    - nose2 -v --with-coverage --coverage midnite
+    - flake8 tests pymidnite setup.py
+
+after_success:
+    coveralls
+
+notifications:
+    email: false

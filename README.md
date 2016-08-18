@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/CenSEPS/pymidnite.svg?branch=master)](https://travis-ci.org/CenSEPS/pymidnite)  
+[![Build Status](https://travis-ci.org/CenSEPS/pymidnite.svg?branch=master)](https://travis-ci.org/CenSEPS/pymidnite)
+[![Coverage Status](https://coveralls.io/repos/github/CenSEPS/pymidnite/badge.svg?branch=master)](https://coveralls.io/github/CenSEPS/pymidnite?branch=master)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 # PyMidnite
 
