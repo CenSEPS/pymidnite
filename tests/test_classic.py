@@ -64,8 +64,8 @@ class TestMidniteClassicUSB(unittest.TestCase):
             timeout=def_timeout
         )
         mock_usb_init.assert_called_once_with(
-            idVendor=MidniteClassicUSB.idVendor,
-            idProduct=MidniteClassicUSB.idProduct
+            idVendor=MidniteClassicUSB.id_vendor,
+            idProduct=MidniteClassicUSB.id_product
         )
 
         mock_serial.reset_mock()
@@ -100,8 +100,8 @@ class TestMidniteClassicUSB(unittest.TestCase):
             timeout=t_timeout
         )
         mock_usb_init.assert_called_once_with(
-            idVendor=MidniteClassicUSB.idVendor,
-            idProduct=MidniteClassicUSB.idProduct
+            idVendor=MidniteClassicUSB.id_vendor,
+            idProduct=MidniteClassicUSB.id_product
         )
 
     def test_parse_usb_line(self):

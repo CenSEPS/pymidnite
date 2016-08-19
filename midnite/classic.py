@@ -217,9 +217,9 @@ class MidniteClassicUSB(USBMixin, object):
     Averaget Batt amps, PV Input Amps, Average Batt Power (charging) Watts\r\n"
     twice per second
     """
-    idVendor = 0xFFFF
+    id_vendor = 0xFFFF
 
-    idProduct = 0x0005
+    id_product = 0x0005
 
     def __init__(self, port, baud=9600,
                  bytesize=8, parity='N',
@@ -237,7 +237,7 @@ class MidniteClassicUSB(USBMixin, object):
             parity=parity,
             stopbits=stopbits,
             timeout=timeout)
-        self.usb_init(idVendor=self.idVendor, idProduct=self.idProduct)
+        self.usb_init(idVendor=self.id_vendor, idProduct=self.id_product)
 
     @staticmethod
     def _parse_usb_data_line(line):

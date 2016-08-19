@@ -29,13 +29,13 @@ class TestUSBMixin(unittest.TestCase):
         mock_dev.iSerialNumber = 2
         mock_find.return_value = mock_dev
         u = USBMixin()
-        t_idVendor = 0xDEAD
-        t_idProduct = 0xBEEF
-        u.usb_init(idVendor=t_idVendor, idProduct=t_idProduct)
+        t_id_vendor = 0xDEAD
+        t_id_product = 0xBEEF
+        u.usb_init(idVendor=t_id_vendor, idProduct=t_id_product)
         self.assertIs(u.usb_dev, mock_dev)
         mock_find.assert_called_once_with(
-            idVendor=t_idVendor,
-            idProduct=t_idProduct
+            idVendor=t_id_vendor,
+            idProduct=t_id_product
         )
         self.assertEqual(u.manufacturer, side_effect[mock_dev.iManufacturer])
         self.assertEqual(u.product, side_effect[mock_dev.iProduct])
