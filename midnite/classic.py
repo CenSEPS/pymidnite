@@ -280,12 +280,3 @@ class MidniteClassicDataError(Exception):
 
 class MidniteClassicUSBError(Exception):
     pass
-
-if __name__ == "__main__":
-    midnite = MidniteClassicTCP('192.168.1.10', 502)
-    res = midnite.UNIT_ID
-    print res
-    res = midnite.UNIT_SW_DATE_RO
-    print res
-    res = midnite.UNIT_MAC_ADDRESS
-    print res
