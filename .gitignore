@@ -3,3 +3,4 @@ venv/
 build/
 dist/
 pymidnite.egg-info/
+.coverage
