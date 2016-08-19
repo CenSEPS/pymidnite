@@ -164,6 +164,9 @@ class MidniteClassicTCP(object):
 
     @staticmethod
     def _addr(addr):
+        if type(addr) is not int:
+            raise TypeError("addr expected type int, \
+                instead got type {0}".format(type(addr)))
         return addr-1
 
     def __init__(self, host, port):

@@ -2,7 +2,8 @@ import unittest
 import mock
 
 from midnite.classic import _msb, _lsb, MidniteClassicModbusRegisters,\
-    MidniteClassicUSB, MidniteClassicDataError, MidniteClassicUSBError
+    MidniteClassicUSB, MidniteClassicDataError, MidniteClassicUSBError,\
+    MidniteClassicTCP
 
 
 class TestPrivateFunctions(unittest.TestCase):
@@ -35,6 +36,29 @@ class TestPrivateFunctions(unittest.TestCase):
         self.assertEquals(_lsb(a), 0x11)
         a = 0x1
         self.assertEquals(_lsb(a), 0x1)
+
+
+class TestMidniteClassicTCP(unittest.TestCase):
+
+    def test__addr(self):
+        t_val = 4001
+        expected = t_val - 1
+        self.assertEqual(
+            expected,
+            MidniteClassicTCP._addr(t_val)
+        )
+        t_val = 4.0
+        self.assertRaises(
+            TypeError,
+            MidniteClassicTCP._addr,
+            t_val
+        )
+        t_val = 's'
+        self.assertRaises(
+            TypeError,
+            MidniteClassicTCP._addr,
+            t_val
+        )
 
 
 class TestMidniteClassicUSB(unittest.TestCase):
