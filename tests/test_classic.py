@@ -4,6 +4,7 @@ import mock
 from midnite.classic import _msb, _lsb, MidniteClassicModbusRegisters,\
     MidniteClassicUSB, MidniteClassicDataError, MidniteClassicUSBError,\
     MidniteClassicTCP
+from pymodbus.register_read_message import ReadHoldingRegistersResponse  # noqa
 
 
 class TestPrivateFunctions(unittest.TestCase):
@@ -67,6 +68,41 @@ class TestMidniteClassicTCP(unittest.TestCase):
             MidniteClassicTCP._addr,
             t_val
         )
+
+    @mock.patch('midnite.classic.ModbusTcpClient')
+    def test_getattr_with_valid_input(self, mock_tcp_client):
+        # prepare test variables
+        t_host, t_port = 'fakehost', 500
+        t_register = 'VALID_REGISTER'
+        t_register_addr = 5000
+        t_register_size = 1
+        t_register_info_no_decoder = {
+            'address': t_register_addr,
+            'count': t_register_size,
+            'readable': True,
+            'writeable': False,
+        }
+        t_register_info_with_decoder = t_register_info_no_decoder
+        t_register_info_with_decoder['decode'] = lambda v: {'mock': v}
+        # prepare mock objects to return valid responses
+        t_register_contents = ['coolmodbusstuff']
+        t_modbus_response = mock.Mock()
+        # sometimes the mock library confuses me vvv
+        type(t_modbus_response).registers = \
+            mock.PropertyMock(return_value=t_register_contents)
+        mtc = mock_tcp_client.return_value
+        mtc.read_holding_registers.return_value = t_modbus_response
+        MidniteClassicTCP.registers = \
+            mock.PropertyMock(return_value=[t_register])
+        setattr(
+            MidniteClassicModbusRegisters,
+            t_register,
+            mock.PropertyMock(return_value=t_register_info_no_decoder)
+        )
+        m = MidniteClassicTCP(t_host, t_port)
+        expected = {'mock': t_register_contents}
+        a = getattr(m, t_register)
+        self.assertDictEqual(a, expected)
 
 
 class TestMidniteClassicUSB(unittest.TestCase):
