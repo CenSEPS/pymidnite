@@ -124,6 +124,15 @@ class TestMidniteClassicTCP(unittest.TestCase):
             count=t_register_size
         )
 
+    @mock.patch('midnite.classic.ModbusTcpClient')
+    def test_getattr_with_invalid_input(self, mock_tcp_client):
+        # test invalid register
+        t_register_name = 'INVALID_REGISTER'
+        self.assertRaises(AttributeError, getattr,
+                          MidniteClassicTCP, t_register_name)
+
+        # TODO test the other two exception conditions
+
 
 class TestMidniteClassicUSB(unittest.TestCase):
 
