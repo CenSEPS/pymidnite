@@ -189,6 +189,8 @@ class MidniteClassicTCP(object):
                 if 'decode' in register_dict.keys():
                     decoder = register_dict['decode']
                     result = decoder(result.registers)
+                else:
+                    result = result.registers
                 return result
             else:
                 raise AttributeError(
