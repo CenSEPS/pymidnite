@@ -82,7 +82,7 @@ class TestMidniteClassicTCP(unittest.TestCase):
             'readable': True,
             'writeable': False,
         }
-        t_register_info_with_decoder = t_register_info_no_decoder
+        t_register_info_with_decoder = t_register_info_no_decoder.copy()
         t_register_info_with_decoder['decode'] = lambda v: {'mock': v}
         # prepare mock objects to return valid responses
         t_register_contents = ['coolmodbusstuff']
@@ -100,9 +100,29 @@ class TestMidniteClassicTCP(unittest.TestCase):
             mock.PropertyMock(return_value=t_register_info_no_decoder)
         )
         m = MidniteClassicTCP(t_host, t_port)
+        a = getattr(m, t_register)
+        self.assertEqual(a, t_register_contents)
+        mtc.read_holding_registers.assert_called_once_with(
+            address=t_register_addr-1,  # _addr subtracts one
+            count=t_register_size
+        )
+
+        mtc.reset_mock()
+        # next part of test tests a register with a decoder
+        setattr(
+            MidniteClassicModbusRegisters,
+            t_register,
+            mock.PropertyMock(return_value=t_register_info_with_decoder)
+        )
+        del m
+        m = MidniteClassicTCP(t_host, t_port)
         expected = {'mock': t_register_contents}
         a = getattr(m, t_register)
-        self.assertDictEqual(a, expected)
+        self.assertEqual(a, expected)
+        mtc.read_holding_registers.assert_called_once_with(
+            address=t_register_addr-1,  # _addr subtracts one
+            count=t_register_size
+        )
 
 
 class TestMidniteClassicUSB(unittest.TestCase):
