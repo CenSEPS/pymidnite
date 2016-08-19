@@ -40,6 +40,14 @@ class TestPrivateFunctions(unittest.TestCase):
 
 class TestMidniteClassicTCP(unittest.TestCase):
 
+    @mock.patch('midnite.classic.ModbusTcpClient')
+    def test_constructor(self, mock_modbus_client):
+        t_host = 'fakehost'
+        t_port = 500
+        m = MidniteClassicTCP(t_host, t_port)
+        self.assertIsNot(m.client, None)
+        mock_modbus_client.assert_called_once_with(t_host, t_port)
+
     def test__addr(self):
         t_val = 4001
         expected = t_val - 1

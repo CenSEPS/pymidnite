@@ -173,7 +173,6 @@ class MidniteClassicTCP(object):
         # check if host/port are none?
         super(MidniteClassicTCP, self).__setattr__(
             'client', ModbusTcpClient(host, port))
-        # self.client = ModbusTcpClient(host, port)
 
     def __getattr__(self, name):
         if name in self.registers:
