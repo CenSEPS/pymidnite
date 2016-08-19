@@ -162,7 +162,8 @@ class MidniteClassicTCP(object):
 
     registers = MidniteClassicModbusRegisters.get_register_list()
 
-    def _addr(self, addr):
+    @staticmethod
+    def _addr(addr):
         return addr-1
 
     def __init__(self, host, port):
@@ -238,8 +239,8 @@ class MidniteClassicUSB(USBMixin, object):
             timeout=timeout)
         self.usb_init(idVendor=self.idVendor, idProduct=self.idProduct)
 
-    @classmethod
-    def _parse_usb_data_line(cls, line):
+    @staticmethod
+    def _parse_usb_data_line(line):
         values = line.split(',')
         if len(values) != 6:
             raise MidniteClassicDataError("Recieved Bad Line")
