@@ -177,7 +177,7 @@ class MidniteClassicTCP(object):
             register_dict = getattr(MidniteClassicModbusRegisters, name)
             if register_dict is None:
                 raise AttributeError(
-                    "Register {} is not implemented.".format(name))
+                    "Register {0} is not implemented.".format(name))
             if register_dict['readable']:
                 self.client.connect()
                 result = self.client.read_holding_registers(
@@ -190,24 +190,24 @@ class MidniteClassicTCP(object):
                 return result
             else:
                 raise AttributeError(
-                    "Register {} is not readable.".format(name))
+                    "Register {0} is not readable.".format(name))
         else:
-            raise AttributeError("Register {} is invalid".format(name))
+            raise AttributeError("Register {0} is invalid".format(name))
 
     def __setattr__(self, name, value):
         if name in self.registers:
             register_dict = getattr(MidniteClassicModbusRegisters, name)
             if register_dict is None:
                 raise AttributeError(
-                    "Register {} is not implemented".format(name))
+                    "Register {0} is not implemented".format(name))
             if register_dict['writable']:
                 raise NotImplementedError(
                     "Write operations have not been implemented yet")
             else:
                 raise AttributeError(
-                    "Register {} is not writable".format(name))
+                    "Register {0} is not writable".format(name))
         else:
-            raise AttributeError("Register {} is invalid".format(name))
+            raise AttributeError("Register {0} is invalid".format(name))
 
 
 class MidniteClassicUSB(USBMixin, object):
